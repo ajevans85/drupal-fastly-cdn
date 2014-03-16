@@ -12,6 +12,7 @@ function fastly_setup_form($form_state) {
   $api = fastly_get_api();
   $service_id = variable_get('fastly_service_id', '');
   $api_key = variable_get('fastly_api_key', '');
+  $host = reset(explode(":", $_SERVER['HTTP_HOST'])); //PHP, why all I want is first element in 1 expression!!!! 
 
   $form['fastly_api_key'] = array(
     '#type' => 'textfield',
@@ -44,6 +45,13 @@ function fastly_setup_form($form_state) {
       '#weight' => 10,
     );
   }
+
+  $form['fastly_default_host'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Default Host'),
+    '#default_value' => $service_id ? $api->getSettings()->{'general.default_host'} : $host,
+    '#description' => t('The default hostname for this service'),
+  );
 
   $form['fastly_ttl'] = array(
     '#type' => 'textfield',
@@ -305,7 +313,10 @@ function fastly_setup_form_validate($form, &$form_state) {
  */
 function fastly_setup_form_submit($form, &$form_state) {
   $api = fastly_get_api();
-  $api->updateSettings(array('general.default_ttl' => $form_state['values']['fastly_ttl'], 'general.default_host' => 'www.eexample.com'));
+  $api->updateSettings(array(
+    'general.default_ttl' => $form_state['values']['fastly_ttl'], 
+    'general.default_host' => $form_state['values']['fastly_default_host']
+  ));
 }
 
 /**
