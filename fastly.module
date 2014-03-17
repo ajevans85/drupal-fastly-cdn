@@ -31,7 +31,8 @@ function fastly_init() {
     drupal_add_http_header('Surrogate-Control', 'no-store');
   }
   else {
-    drupal_add_http_header('Surrogate-Control', 'max-age=86400');
+    $default_ttl = variable_get('fastly_ttl', '86400');
+    drupal_add_http_header('Surrogate-Control', "max-age=$default_ttl");
   }
 
   drupal_add_http_header('Vary', 'Cookie');
