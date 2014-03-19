@@ -313,10 +313,7 @@ function fastly_setup_form_validate($form, &$form_state) {
  */
 function fastly_setup_form_submit($form, &$form_state) {
   $api = fastly_get_api();
-  $api->updateSettings(array(
-    'general.default_ttl' => $form_state['values']['fastly_ttl'], 
-    'general.default_host' => $form_state['values']['fastly_default_host']
-  ));
+  $api->updateSettings(array('general.default_ttl' => $form_state['values']['fastly_ttl']));
 }
 
 /**
